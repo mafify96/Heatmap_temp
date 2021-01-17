@@ -47,7 +47,7 @@ color_bar = ColorBar(color_mapper = color_mapper,
                      orientation = 'horizontal',
                      major_label_overrides = tick_labels)
 # Create figure object.
-p = figure(title = 'Surface Temperature of I-35 on Dec 14 at 6 AM', 
+p = figure(title = 'Online Surface Temperature of I-35', 
            plot_height = 600, plot_width = 950, 
            toolbar_location = 'below',
            tools = 'pan, wheel_zoom, box_zoom, reset')
