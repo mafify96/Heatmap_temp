@@ -35,7 +35,7 @@ geosource1 = GeoJSONDataSource(geojson = merged1.to_json())
 # Define color palettes
 palette = Turbo256 
 # Instantiate LinearColorMapper that linearly maps numbers in a range, into a sequence of colors.
-color_mapper = LinearColorMapper(palette = palette, low = 0, high = 40, nan_color = None)
+color_mapper = LinearColorMapper(palette = palette, low = 0, high = 40, nan_color = 'dimgray')
 # Define custom tick labels for color bar.
 tick_labels = {'10': '15', '15':'20','20':'25','30':'30+'}
 # Create color bar.
