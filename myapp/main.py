@@ -102,9 +102,8 @@ df = pd.DataFrame(
 
 
 
-os.chdir(r"C:\Users\afif0000\Documents\Heatmap_temp-main\Heatmap_temp-main\myapp\data") 
 # set the filepath and load in a shapefile
-fp = 'stationsI35_Merge2.shp'
+fp = 'data/stationsI35_Merge2.shp'
 map_df = gpd.read_file(fp)
 # check data type so we can see that this is not a normal dataframe, but a GEOdataframe
 merged = map_df.set_index('Name').join(df.set_index('codes'))
