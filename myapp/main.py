@@ -103,7 +103,7 @@ df = pd.DataFrame(
 
 
 # set the filepath and load in a shapefile
-fp = 'data/stationsI35_Merge2.shp'
+fp = 'myapp/data/stationsI35_Merge2.shp'
 map_df = gpd.read_file(fp)
 # check data type so we can see that this is not a normal dataframe, but a GEOdataframe
 merged = map_df.set_index('Name').join(df.set_index('codes'))
