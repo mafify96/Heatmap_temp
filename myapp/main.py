@@ -5,42 +5,24 @@ from bokeh.models import HoverTool
 import os 
 import geopandas as gpd
 import os 
-import geopandas as gpd
-import pandas as pd
 import json
 from bokeh.io import show
 from bokeh.models import (CDSView, ColorBar, ColumnDataSource,
                           CustomJS, CustomJSFilter, 
                           GeoJSONDataSource, HoverTool,
                           LinearColorMapper, Slider)
-from bokeh.layouts import column, row, widgetbox
-from bokeh.palettes import brewer, Category20, Turbo256
 from bokeh.plotting import figure
 from bokeh.embed import file_html
 from bokeh.resources import CDN
 from bokeh.plotting import figure, curdoc
-
-
 import requests
 import numpy as np
-import pandas as pd
-import json
 import statistics 
 from datetime import date, datetime
 from pytz import timezone
-import os 
-import geopandas as gpd
-import pandas as pd
-from bokeh.io import show
-from bokeh.models import (CDSView, ColorBar, ColumnDataSource,
-                          CustomJS, CustomJSFilter, 
-                          GeoJSONDataSource, HoverTool,
-                          LinearColorMapper, Slider)
 from bokeh.layouts import column, row, widgetbox
 from bokeh.palettes import brewer, Category20, Turbo256
 from bokeh.plotting import figure
-from bokeh.embed import file_html
-from bokeh.resources import CDN
 from bokeh.models import FixedTicker
 
 
@@ -120,9 +102,9 @@ df = pd.DataFrame(
 
 
 
-#os.chdir(r"C:\Users\Afify\Documents\ArcGIS") 
+os.chdir(r"C:\Users\afif0000\Documents\Heatmap_temp-main\Heatmap_temp-main\myapp\data") 
 # set the filepath and load in a shapefile
-fp = 'myapp/data/stationsI35_Merge2.shp'
+fp = 'stationsI35_Merge2.shp'
 map_df = gpd.read_file(fp)
 # check data type so we can see that this is not a normal dataframe, but a GEOdataframe
 merged = map_df.set_index('Name').join(df.set_index('codes'))
