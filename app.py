@@ -112,7 +112,7 @@ def index():
     
     
     
-    os.chdir(r"C:\Users\afif0000\Documents\Heatmap_temp-main\Heatmap_temp-main\myapp") 
+    #os.chdir(r"C:\Users\afif0000\Documents\Heatmap_temp-main\Heatmap_temp-main\myapp") 
     # set the filepath and load in a shapefile
     fp = 'stationsI35_Merge2.shp'
     map_df = gpd.read_file(fp)
