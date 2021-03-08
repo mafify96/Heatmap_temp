@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>RWIS data models</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<link
+    href="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.2.0/bokeh.min.css"
+    rel="stylesheet" type="text/css">
+	<link
+    href="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.2.0/bokeh-widgets.css"
+    rel="stylesheet" type="text/css">
+	<link
+    href="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.2.0/bokeh-tables.css"
+    rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.2.0/bokeh.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.2.0/bokeh-widgets.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.2.0/bokeh-tables.js"></script>
+	<script>
+		!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+		</script>
+</head>
+<body>
+
+
+<div class="wrapper">
+	
+ <nav id="sidebar">
+ 	
+ 	 <div class="sidebar-header">
+ 	 	<h3 style="font-style: italic;">RWIS Analysis</h3>
+		  
+		  <h4>     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/OU-Logo.svg/1200px-OU-Logo.svg.png"width="60" height="100" class="center" alt="Oklahoma University">
+			<img src="https://okcfox.com/resources/media2/16x9/full/1015/center/80/47f99e09-3fd4-4de9-a804-433d939dbdd9-large16x9_ODOT.png"width="100" height="40" class="center" alt="Oklahoma University">
+
+		  </h4>
+ 	 </div>
+ 	 <ul class="lisst-unstyled components">
+
+		<li>
+			<a href="index1.html">Main Board</a>
+		</li>
+
+ 	 	<li class="active">
+ 	 		<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Stations</a>
+ 	 	  <ul class="collapse list-unstyled" id="homeSubmenu">
+ 	 	  	<li>
+ 	 	  		<a href="index.html">station 213</a>
+ 	 	  	</li>
+ 	 	  	<li>
+ 	 	  		<a href="#">Station 199</a>
+ 	 	  	</li>
+ 	 	  	<li>
+				<a href="#">Station 187</a>
+			</li>
+			<li>
+				<a href="#">Station 165</a>
+			</li>
+			<li>
+				<a href="#">Station 154</a>
+			</li>
+			<li>
+				<a href="#">Station 141</a>
+			</li>
+			<li>
+				<a href="#">Station 235</a>
+			</li>
+			<li>
+				<a href="#">Station 107</a>
+			</li>
+			<li>
+				<a href="#">Station 92</a>
+			</li>
+			<li>
+				<a href="#">Station 74</a>
+			</li>
+			<li>
+				<a href="#">Station 58</a>
+			</li>
+			<li>
+				<a href="#">Station 51</a>
+			</li>
+			<li>
+				<a href="#">Station 32</a>
+			</li>
+			<li>
+				<a href="#">Station 15</a>
+			</li>
+			<li>
+				<a href="#">Station 1</a>
+			</li>
+ 	 	  </ul>
+ 	 	</li>
+
+		  <li>
+			<a href="#">About</a>
+		</li>
+
+
+ 	 </ul>
+ </nav>
+
+
+<div id="content">
+	
+
+<br><br>
+	<h1><a class="weatherwidget-io" href="https://forecast7.com/en/35d47n97d52/oklahoma-city/" data-label_1="OKLAHOMA CITY" data-label_2="WEATHER" data-theme="original" data-basecolor="#232e33" >OKLAHOMA CITY WEATHER</a></h1>
+
+    <h2>RWIS Weather Data Update</h2>
+	
+	{{ div|safe }}
+	{{ script|safe }}
+
+
+
+  <div class="line"></div>
+  <h3>Lorem Ipsum</h3>
+
+   <p>
+    	It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+    	
+    </p>
+
+
+
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script>
+
+$(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+
+</script>
+
+
+</body>
+</html>

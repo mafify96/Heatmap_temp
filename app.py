@@ -56,17 +56,13 @@ def index():
             '74 - Road','74 - Bridge','58 - Road','58 - Bridge','51 - Road','51 - Bridge','32 - Road','32 - Bridge',
             '15 - Road','15 - Bridge','1 - Road','1 - Bridge']
     temp1 = []
-    
-    for x in range(len(st)):
-        
+    for x in range(len(st)):    
         #print(x)
         temp1_surface_temperature = []
         time_now = []
         temp2_surface_temperature = []
         total_msg = ("".join([S1,st[x],P1,t2,comma,t3,P2,t,comma,t1]))
-        data = requests.get(total_msg).json()
-       
-        
+        data = requests.get(total_msg).json()   
         if not data: 
             temp = temp1[-1]
             tempp = temp1[-2]
@@ -101,6 +97,257 @@ def index():
             del data
             del temp1_surface_temperature
             del temp2_surface_temperature
+            time_st = time_now*30                                    
+    df = pd.DataFrame(
+        {'Time': time_st,
+         'codes': st_n,
+         'temp': temp1
+         })  
+    #os.chdir(r"C:\Users\Afify\Downloads\Heatmap_temp-main") 
+    # set the filepath and load in a shapefile
+    fp = 'stationsI35_Merge2.shp'
+    map_df = gpd.read_file(fp)
+    # check data type so we can see that this is not a normal dataframe, but a GEOdataframe
+    merged = map_df.set_index('Name').join(df.set_index('codes'))
+    merged.reset_index(level=0, inplace=True)
+    merged1 = merged.loc[~merged['NAME_0'].isin(['United States'])]
+    #merged.fillna('No data', inplace = True) 
+    # Input GeoJSON source that contains features for plotting
+    geosource = GeoJSONDataSource(geojson = merged.to_json())
+    geosource1 = GeoJSONDataSource(geojson = merged1.to_json())
+    # Define color palettes
+    palette = Turbo256 
+    # Instantiate LinearColorMapper that linearly maps numbers in a range, into a sequence of colors.
+    mx = df['temp'].max()
+    mn = df['temp'].min()
+    color_mapper = LinearColorMapper(palette = palette, low = mn, high = mx, nan_color = None)    
+    mx = merged['temp'].max()
+    mn = merged['temp'].min()
+    n_ticks = 5
+    ticks = np.linspace(mn, mx, n_ticks).round(1)  # round to desired precision 
+    #color_ticks = FixedTicker(ticks=ticks)
+    #create first plot
+    # Create color bar.
+    color_bar = ColorBar(color_mapper = color_mapper, 
+                         label_standoff = 8,
+                         width = 500, height = 20,
+                         border_line_color = None,
+                         location = (0,0), 
+                         orientation = 'horizontal')
+    # Create figure object.
+    title = f'Surface Temperature of I-35 from {t3} to {t1} at {t2}'
+    p = figure(title = title, 
+               plot_height = 600, plot_width = 950, 
+               toolbar_location = 'below',
+               tools = 'pan, wheel_zoom, box_zoom, reset')
+    p.xgrid.grid_line_color = None
+    p.ygrid.grid_line_color = None
+    # Add patch renderer to figure.
+    states = p.patches('xs','ys', source = geosource,
+                       fill_color = {'field' :'temp',
+                                     'transform' : color_mapper},
+                       line_color = 'grey', 
+                       line_width = 0.8, 
+                       fill_alpha = 0.5)
+    states1 = p.patches('xs','ys', source = geosource1,
+                        fill_color = {'field' :'temp',
+                                      'transform' : color_mapper},
+                        line_color = 'grey', 
+                        line_width = 0.8, 
+                        fill_alpha = 0.5)
+    # Create hover tool
+    p.add_tools(HoverTool(renderers = [states1],
+                          tooltips = [('station','@index'),
+                                      ('temp','@temp')]))
+    # Specify layout
+    p.add_layout(color_bar, 'below')
+    #html = file_html(p, CDN, "my plot")
+    p.axis.visible = False
+    
+    
+  ##########################################################################################################
+   
+  
+    # second Plot 
+    temp1 = []
+
+    for x in range(len(st)):
+        
+        #print(x)
+        temp1_surface_temperature = []
+        time_now = []
+        temp2_surface_temperature = []
+        total_msg = ("".join([S1,st[x],P1,t2,comma,t3,P2,t,comma,t1]))
+        data = requests.get(total_msg).json()
+       
+        
+        if not data: 
+            temp = temp1[-1]
+            tempp = temp1[-2]
+            temp1.append(tempp)
+            temp1.append(temp)
+        else:
+            time_now.append(data[0]['date_time'])
+            n= len(data)
+            for i in range(n):
+                temp1_surface_temperature.append(data[i]['wind_speed'])
+                Not_none_values = filter(None.__ne__, temp1_surface_temperature)
+                temp1_surface_temperature = list(Not_none_values)
+                #print(temp1_surface_temperature)
+            if not temp1_surface_temperature: 
+                temp = temp1[-1]
+                temp1.append(temp)
+            else:
+                temp1.append(statistics.mean(temp1_surface_temperature))
+                #print(temp1)
+            for i in range(n):
+                temp2_surface_temperature.append(data[i]['wind_speed'])
+                Not_none_values = filter(None.__ne__, temp2_surface_temperature)
+                temp2_surface_temperature = list(Not_none_values)
+                #print(temp1_surface_temperature)
+            if not temp2_surface_temperature: 
+                temp = temp1[-1]
+                temp1.append(temp)
+            else:
+                temp1.append(statistics.mean(temp2_surface_temperature))
+                #print(temp1)
+                #print(temp1)
+            del data
+            del temp1_surface_temperature
+            del temp2_surface_temperature
+            time_st = time_now*30
+                                       
+    
+    df = pd.DataFrame(
+        {'Time': time_st,
+         'codes': st_n,
+         'speed': temp1
+         })
+    
+    
+    
+    #os.chdir(r"C:\Users\Afify\Downloads\Heatmap_temp-main") 
+    # set the filepath and load in a shapefile
+    fp = 'stationsI35_Merge2.shp'
+    map_df = gpd.read_file(fp)
+    # check data type so we can see that this is not a normal dataframe, but a GEOdataframe
+    merged = map_df.set_index('Name').join(df.set_index('codes'))
+    merged.reset_index(level=0, inplace=True)
+    
+    
+    
+    merged1 = merged.loc[~merged['NAME_0'].isin(['United States'])]
+        
+        
+        #merged.fillna('No data', inplace = True)
+    
+    # Input GeoJSON source that contains features for plotting
+    geosource = GeoJSONDataSource(geojson = merged.to_json())
+    geosource1 = GeoJSONDataSource(geojson = merged1.to_json())
+        
+        
+        # Define color palettes
+    palette = Turbo256 
+    # Instantiate LinearColorMapper that linearly maps numbers in a range, into a sequence of colors.
+    mx = df['speed'].max()
+    mn = df['speed'].min()
+    color_mapper = LinearColorMapper(palette = palette, low = mn, high = mx, nan_color = None)
+        
+    mx = merged['speed'].max()
+    mn = merged['speed'].min()
+    n_ticks = 5
+    ticks = np.linspace(mn, mx, n_ticks).round(1)  # round to desired precision 
+    #color_ticks = FixedTicker(ticks=ticks)
+
+  #create first plot
+    # Create color bar.
+    color_bar = ColorBar(color_mapper = color_mapper, 
+                         label_standoff = 8,
+                         width = 500, height = 20,
+                         border_line_color = None,
+                         location = (0,0), 
+                         orientation = 'horizontal')
+    # Create figure object.
+    title = f'wind speed of I-35 from {t3} to {t1} at {t2}'
+    p1 = figure(title = title, 
+               plot_height = 600, plot_width = 950, 
+               toolbar_location = 'below',
+               tools = 'pan, wheel_zoom, box_zoom, reset')
+    p1.xgrid.grid_line_color = None
+    p1.ygrid.grid_line_color = None
+    # Add patch renderer to figure.
+    states = p1.patches('xs','ys', source = geosource,
+                       fill_color = {'field' :'speed',
+                                     'transform' : color_mapper},
+                       line_color = 'grey', 
+                       line_width = 0.8, 
+                       fill_alpha = 0.5)
+    
+    states1 = p1.patches('xs','ys', source = geosource1,
+                        fill_color = {'field' :'speed',
+                                      'transform' : color_mapper},
+                        line_color = 'grey', 
+                        line_width = 0.8, 
+                        fill_alpha = 0.5)
+    
+    # Create hover tool
+    p1.add_tools(HoverTool(renderers = [states1],
+                          tooltips = [('station','@index'),
+                                      ('speed','@speed')]))
+    # Specify layout
+    p1.add_layout(color_bar, 'below')
+    #html = file_html(p, CDN, "my plot")
+    p1.axis.visible = False
+ 
+    ################################################################################################
+    
+    # third Plot 
+    temp1 = []
+
+    for x in range(len(st)):
+        
+        #print(x)
+        temp1_surface_temperature = []
+        time_now = []
+        temp2_surface_temperature = []
+        total_msg = ("".join([S1,st[x],P1,t2,comma,t3,P2,t,comma,t1]))
+        data = requests.get(total_msg).json()
+       
+        
+        if not data: 
+            temp = temp1[-1]
+            tempp = temp1[-2]
+            temp1.append(tempp)
+            temp1.append(temp)
+        else:
+            time_now.append(data[0]['date_time'])
+            n= len(data)
+            for i in range(n):
+                temp1_surface_temperature.append(data[i]['temperature'])
+                Not_none_values = filter(None.__ne__, temp1_surface_temperature)
+                temp1_surface_temperature = list(Not_none_values)
+                #print(temp1_surface_temperature)
+            if not temp1_surface_temperature: 
+                temp = temp1[-1]
+                temp1.append(temp)
+            else:
+                temp1.append(statistics.mean(temp1_surface_temperature))
+                #print(temp1)
+            for i in range(n):
+                temp2_surface_temperature.append(data[i]['temperature'])
+                Not_none_values = filter(None.__ne__, temp2_surface_temperature)
+                temp2_surface_temperature = list(Not_none_values)
+                #print(temp1_surface_temperature)
+            if not temp2_surface_temperature: 
+                temp = temp1[-1]
+                temp1.append(temp)
+            else:
+                temp1.append(statistics.mean(temp2_surface_temperature))
+                #print(temp1)
+                #print(temp1)
+            del data
+            del temp1_surface_temperature
+            del temp2_surface_temperature
             time_st = time_now*30
                                        
     
@@ -112,7 +359,7 @@ def index():
     
     
     
-    #os.chdir(r"C:\Users\afif0000\Documents\Heatmap_temp-main\Heatmap_temp-main\myapp") 
+    #os.chdir(r"C:\Users\Afify\Downloads\Heatmap_temp-main") 
     # set the filepath and load in a shapefile
     fp = 'stationsI35_Merge2.shp'
     map_df = gpd.read_file(fp)
@@ -146,21 +393,6 @@ def index():
     #color_ticks = FixedTicker(ticks=ticks)
 
   #create first plot
-    p1 = figure(plot_width=950, plot_height=600)
-    p1.line([1, 2, 3, 4, 5], [6, 7, 2, 4, 5], line_width=2)
-    
-    
-    p3 = figure(plot_width=950, plot_height=600)
-    p3.line([1, 2, 3, 4, 5], [6, 7, 2, 4, 5], line_width=2)
-    
-
-
-    data = np.random.normal(0, 0.5, 1000)
-    hist, edges = np.histogram(data, density=True, bins=50)
-
-    p2 = figure(plot_width=950, plot_height=600)
-    p2.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:], line_color="white")  
-    
     # Create color bar.
     color_bar = ColorBar(color_mapper = color_mapper, 
                          label_standoff = 8,
@@ -170,21 +402,21 @@ def index():
                          orientation = 'horizontal')
     # Create figure object.
     title = f'Surface Temperature of I-35 from {t3} to {t1} at {t2}'
-    p = figure(title = title, 
+    p2 = figure(title = title, 
                plot_height = 600, plot_width = 950, 
                toolbar_location = 'below',
                tools = 'pan, wheel_zoom, box_zoom, reset')
-    p.xgrid.grid_line_color = None
-    p.ygrid.grid_line_color = None
+    p2.xgrid.grid_line_color = None
+    p2.ygrid.grid_line_color = None
     # Add patch renderer to figure.
-    states = p.patches('xs','ys', source = geosource,
+    states = p2.patches('xs','ys', source = geosource,
                        fill_color = {'field' :'temp',
                                      'transform' : color_mapper},
                        line_color = 'grey', 
                        line_width = 0.8, 
                        fill_alpha = 0.5)
     
-    states1 = p.patches('xs','ys', source = geosource1,
+    states1 = p2.patches('xs','ys', source = geosource1,
                         fill_color = {'field' :'temp',
                                       'transform' : color_mapper},
                         line_color = 'grey', 
@@ -192,29 +424,175 @@ def index():
                         fill_alpha = 0.5)
     
     # Create hover tool
-    p.add_tools(HoverTool(renderers = [states1],
+    p2.add_tools(HoverTool(renderers = [states1],
                           tooltips = [('station','@index'),
                                       ('temp','@temp')]))
     # Specify layout
-    p.add_layout(color_bar, 'below')
+    p2.add_layout(color_bar, 'below')
     #html = file_html(p, CDN, "my plot")
-    p.axis.visible = False
+    p2.axis.visible = False
+  
+    
+  ##############################################################
+    
+  
+    #Fourth Plot
+    temp1 = []
+
+    for x in range(len(st)):
+        
+        #print(x)
+        temp1_surface_temperature = []
+        time_now = []
+        temp2_surface_temperature = []
+        total_msg = ("".join([S1,st[x],P1,t2,comma,t3,P2,t,comma,t1]))
+        data = requests.get(total_msg).json()
+       
+        
+        if not data: 
+            temp = temp1[-1]
+            tempp = temp1[-2]
+            temp1.append(tempp)
+            temp1.append(temp)
+        else:
+            time_now.append(data[0]['date_time'])
+            n= len(data)
+            for i in range(n):
+                temp1_surface_temperature.append(data[i]['total_precipitation'])
+                Not_none_values = filter(None.__ne__, temp1_surface_temperature)
+                temp1_surface_temperature = list(Not_none_values)
+                #print(temp1_surface_temperature)
+            if not temp1_surface_temperature: 
+                temp = temp1[-1]
+                temp1.append(temp)
+            else:
+                temp1.append(statistics.mean(temp1_surface_temperature))
+                #print(temp1)
+            for i in range(n):
+                temp2_surface_temperature.append(data[i]['total_precipitation'])
+                Not_none_values = filter(None.__ne__, temp2_surface_temperature)
+                temp2_surface_temperature = list(Not_none_values)
+                #print(temp1_surface_temperature)
+            if not temp2_surface_temperature: 
+                temp = temp1[-1]
+                temp1.append(temp)
+            else:
+                temp1.append(statistics.mean(temp2_surface_temperature))
+                #print(temp1)
+                #print(temp1)
+            del data
+            del temp1_surface_temperature
+            del temp2_surface_temperature
+            time_st = time_now*30
+                                       
+    
+    df = pd.DataFrame(
+        {'Time': time_st,
+         'codes': st_n,
+         'prec': temp1
+         })
+    
+    
+    
+    #os.chdir(r"C:\Users\Afify\Downloads\Heatmap_temp-main") 
+    # set the filepath and load in a shapefile
+    fp = 'stationsI35_Merge2.shp'
+    map_df = gpd.read_file(fp)
+    # check data type so we can see that this is not a normal dataframe, but a GEOdataframe
+    merged = map_df.set_index('Name').join(df.set_index('codes'))
+    merged.reset_index(level=0, inplace=True)
+    
+    
+    
+    merged1 = merged.loc[~merged['NAME_0'].isin(['United States'])]
+        
+        
+        #merged.fillna('No data', inplace = True)
+    
+    # Input GeoJSON source that contains features for plotting
+    geosource = GeoJSONDataSource(geojson = merged.to_json())
+    geosource1 = GeoJSONDataSource(geojson = merged1.to_json())
+        
+        
+        # Define color palettes
+    palette = Turbo256 
+    # Instantiate LinearColorMapper that linearly maps numbers in a range, into a sequence of colors.
+    mx = df['prec'].max()
+    mn = df['prec'].min()
+    color_mapper = LinearColorMapper(palette = palette, low = mn, high = mx, nan_color = None)
+        
+    mx = merged['prec'].max()
+    mn = merged['prec'].min()
+    n_ticks = 5
+    ticks = np.linspace(mn, mx, n_ticks).round(1)  # round to desired precision 
+    #color_ticks = FixedTicker(ticks=ticks)
+
+  #create first plot
+    # Create color bar.
+    color_bar = ColorBar(color_mapper = color_mapper, 
+                         label_standoff = 8,
+                         width = 500, height = 20,
+                         border_line_color = None,
+                         location = (0,0), 
+                         orientation = 'horizontal')
+    # Create figure object.
+    title = f'precipitation of I-35 from {t3} to {t1} at {t2}'
+    p3 = figure(title = title, 
+               plot_height = 600, plot_width = 950, 
+               toolbar_location = 'below',
+               tools = 'pan, wheel_zoom, box_zoom, reset')
+    p3.xgrid.grid_line_color = None
+    p3.ygrid.grid_line_color = None
+    # Add patch renderer to figure.
+    states = p3.patches('xs','ys', source = geosource,
+                       fill_color = {'field' :'prec',
+                                     'transform' : color_mapper},
+                       line_color = 'grey', 
+                       line_width = 0.8, 
+                       fill_alpha = 0.5)
+    
+    states1 = p3.patches('xs','ys', source = geosource1,
+                        fill_color = {'field' :'prec',
+                                      'transform' : color_mapper},
+                        line_color = 'grey', 
+                        line_width = 0.8, 
+                        fill_alpha = 0.5)
+    
+    # Create hover tool
+    p3.add_tools(HoverTool(renderers = [states1],
+                          tooltips = [('station','@index'),
+                                      ('prec','@prec')]))
+    # Specify layout
+    p3.add_layout(color_bar, 'below')
+    #html = file_html(p, CDN, "my plot")
+    p3.axis.visible = False
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     # Create tab1 from plot p1: tab1
     tab1 = Panel(child=p, title='Surface Temperature HM')
  
     # Create tab2 from plot p2: tab2
-    tab2 = Panel(child=p1, title='Temp last 12 hours')
+    tab2 = Panel(child=p2, title='Air Temperature')
  
     # Create tab3 from plot p3: tab3
-    tab3 = Panel(child=p2, title='Precipitation Events')
+    tab3 = Panel(child=p1, title='Wind speed')
  
     # Create tab4 from plot p4: tab4
-    tab4 = Panel(child=p3, title='Predicted Temp')    
+    tab4 = Panel(child=p3, title='precipitation amount')    
     #kwargs['title'] = 'bokeh-with-flask'    
     # Create a Tabs layout: layout
     layout = Tabs(tabs=[tab1, tab2, tab3, tab4])
     script, div = components(layout)
-    return render_template('index.html',div=div, script=script)   
+    return render_template('index1.html',div=div, script=script)   
 
 if __name__ == '__main__':
     app.run(debug=True)

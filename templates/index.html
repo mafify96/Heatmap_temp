@@ -18,7 +18,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.2.0/bokeh-widgets.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bokeh/2.2.0/bokeh-tables.js"></script>
     </head>
-    <body>
+   
+   <style>
+        .content {
+          max-width: 500px;
+          margin: auto;
+        }
+        </style>   
+    <body  class="content">
         <h1>RWIS Weather Data Update</h1>
         {{ div|safe }}
         {{ script|safe }}
